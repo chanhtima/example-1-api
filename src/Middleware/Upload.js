@@ -1,6 +1,8 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+
+// ตั้งค่า storage สำหรับ Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dir = "images";
@@ -16,6 +18,7 @@ const storage = multer.diskStorage({
   }
 });
 
+// ฟังก์ชันกรองประเภทไฟล์
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === "image/jpeg" ||
@@ -28,10 +31,11 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// กำหนดค่า Multer
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 1024 * 1024 * 5, // จำกัดขนาดไฟล์ที่ 5MB
   },
   fileFilter: fileFilter,
 });

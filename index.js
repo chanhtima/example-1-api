@@ -1,13 +1,13 @@
 const express = require("express");
 const app = express();
-const port = 9000;
+const port = 8000;
 const { readdirSync } = require('fs');
 const cors = require("cors");
 const bodyParser = require("body-parser");
 require('dotenv').config();
 
 // Import the database connection
-const db = require('./src/config/db');
+const db = require('./src/config/database');
 
 // Middleware
 app.use(cors());
@@ -31,6 +31,16 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Server is Running on port: http://localhost:${port}`);
-});
+db.authenticate()
+  .then(() => {
+    // console.log('Database connected...');
+    return db.sync(); // Sync the database models
+  })
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server is Running on port: http://localhost:${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
