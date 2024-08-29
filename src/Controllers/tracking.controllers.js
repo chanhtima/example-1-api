@@ -3,14 +3,7 @@ const Upload = require("../Models/uploads.modal");
 
 exports.post = async (req, res) => {
   try {
-    // ตรวจสอบและแปลงรูปแบบวันที่
-    let formattedEndDate = null;
-    try {
-      formattedEndDate = req.body.end_date ? new Date(req.body.end_date).toISOString() : null;
-    } catch (error) {
-      return res.status(400).json({ error: "Invalid date format" });
-    }
-
+ 
     // ข้อมูลไฟล์ที่อัพโหลด
     const fileData = {
       filename: req.file.filename,
@@ -20,19 +13,13 @@ exports.post = async (req, res) => {
     };
     const uploadedFile = await Upload.create(fileData);
 
-    // ตรวจสอบและจัดการค่า progress ให้เป็นจำนวนเต็ม
-    let progress = parseInt(req.body.progress, 10);
-    if (isNaN(progress)) {
-      return res.status(400).json({ error: "Invalid progress value. Must be a number." });
-    }
-
     // ข้อมูลโครงการ
-    const { name, description, remark } = req.body;
+    const { name, description, remark,end_date ,progress} = req.body;
     const projectData = {
       name,
       description,
-      end_date: formattedEndDate,
-      progress: progress,
+      end_date,
+      progress,
       remark,
       upload_id: uploadedFile.id,
     };

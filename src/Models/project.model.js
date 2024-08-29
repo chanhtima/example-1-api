@@ -30,6 +30,10 @@ const Project = sequelize.define("Project", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  deleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,  
+  },
 }, {
   tableName: 'Project',
   timestamps: true,
