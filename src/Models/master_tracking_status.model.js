@@ -28,6 +28,10 @@ const trackingModel = sequelize.define("master_tracking_status", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  deleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,  
+  },
   upload_ids: {
     type: DataTypes.ARRAY(DataTypes.STRING), // ใช้ ARRAY ของ STRING
     allowNull: true,
