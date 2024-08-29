@@ -1,27 +1,33 @@
+
+
 const trackingModel = require("../Models/master_tracking_status.model");
 const Upload = require("../Models/uploads.modal");
 
 exports.post = async (req, res) => {
   try {
- 
-    // ข้อมูลไฟล์ที่อัพโหลด
-    const fileData = {
-      filename: req.file.filename,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
-      url: "/images/" + req.file.filename,
-    };
-    const uploadedFile = await Upload.create(fileData);
+    // อัพโหลดไฟล์หลายไฟล์
+    const filePromises = req.files.map(file => {
+      const fileData = {
+        filename: file.filename,
+        mimetype: file.mimetype,
+        size: file.size,
+        url: "/images/" + file.filename,
+      };
+      return Upload.create(fileData);
+    });
+    
+    const uploadedFiles = await Promise.all(filePromises);
+    const uploadIds = uploadedFiles.map(file => file.id);
 
     // ข้อมูลโครงการ
-    const { name, description, remark,end_date ,progress} = req.body;
+    const { name, description, remark, end_date, progress } = req.body;
     const projectData = {
       name,
       description,
       end_date,
       progress,
       remark,
-      upload_id: uploadedFile.id,
+      upload_ids: uploadIds,
     };
 
     // สร้างโครงการใหม่
@@ -33,25 +39,32 @@ exports.post = async (req, res) => {
   }
 };
 
+
 exports.getAll = async (req, res) => {
-    try {
-      // ดึงข้อมูลทั้งหมดจาก trackingModel
-      const projects = await trackingModel.findAll({
-        include: [
-          {
-            model: Upload, // รวมข้อมูลจาก Upload
-            as: 'upload', // ชื่อที่ใช้สำหรับการรวม
-            attributes: ['id', 'filename', 'url'] // เลือกเฉพาะฟิลด์ที่ต้องการ
-          }
-        ]
+  try {
+    // ดึงข้อมูลทั้งหมดจาก trackingModel
+    const projects = await trackingModel.findAll();
+
+    // ดึงข้อมูลรูปภาพตาม ID ที่เก็บไว้ใน trackingModel
+    const projectsWithUploads = await Promise.all(projects.map(async (project) => {
+      const uploads = await Upload.findAll({
+        where: {
+          id: project.upload_ids
+        },
+        attributes: ['filename', 'url']
       });
-  
-      if (!projects || projects.length === 0) {
-        return res.status(404).json({ message: "No projects found" });
-      }
-  
-      res.status(200).json({ projects });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+      return {
+        ...project.toJSON(),
+        uploads
+      };
+    }));
+
+    if (!projectsWithUploads || projectsWithUploads.length === 0) {
+      return res.status(404).json({ message: "No projects found" });
     }
-  };
+
+    res.status(200).json({ projects: projectsWithUploads });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

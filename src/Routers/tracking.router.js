@@ -4,7 +4,7 @@ const upload = require('../Middleware/Upload');
 const router = express.Router();
 
 
-router.post('/tracking', upload.single("image"), post);
+router.post('/tracking', upload.array("image"), post);
 router.get('/tracking', getAll);
 
 module.exports = router;
