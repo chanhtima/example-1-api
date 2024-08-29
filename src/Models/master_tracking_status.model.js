@@ -28,14 +28,10 @@ const trackingModel = sequelize.define("master_tracking_status", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  upload_id: {
-    type: DataTypes.UUID,
-    references: {
-      model: Upload,
-      key: "id",
-    },
+  upload_ids: {
+    type: DataTypes.ARRAY(DataTypes.STRING), // ใช้ ARRAY ของ STRING
     allowNull: true,
   },
 });
-trackingModel.belongsTo(Upload, { as: "upload", foreignKey: "upload_id" });
+
 module.exports = trackingModel;
