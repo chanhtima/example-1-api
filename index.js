@@ -5,7 +5,7 @@ const { readdirSync } = require('fs');
 const cors = require("cors");
 const bodyParser = require("body-parser");
 require('dotenv').config();
-const fs = require('fs');
+
 // Import the database connection
 const db = require('./src/config/database');
 
@@ -15,13 +15,9 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(express.json());
 app.use("/api/images", express.static("images"));
 
-const routersPath = './src/Routers';
+// Routes
+readdirSync("./src/Routers").map((r) => app.use("/api", require("./src/Routers/" + r)));
 
-if (fs.existsSync(routersPath)) {
-  readdirSync(routersPath).map((r) => app.use("/api", require(routersPath + "/" + r)));
-} else {
-  console.error(`Directory not found: ${routersPath}`);
-}
 
 // Root route
 app.get("/api", (req, res) => {
