@@ -2,20 +2,14 @@ const { Sequelize } = require("sequelize");
 
 // Initialize Sequelize with environment variables
 const sequelize = new Sequelize(
-  process.env.POSTGRES_DATABASE,   // Database name
-  process.env.POSTGRES_USER,       // Username
-  process.env.POSTGRES_PASSWORD,   // Password
+  process.env.POSTGRES_DATABASE,
+  process.env.POSTGRES_USER,
+  process.env.POSTGRES_PASSWORD,
   {
-    host: process.env.POSTGRES_HOST,  // Host
-    port: process.env.POSTGRES_PORT,  // Port (optional)
-    dialect: "postgres",  
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false // You may need this option depending on your setup
-      }
-    },
-    logging: false             
+    host: process.env.POSTGRES_HOST,
+    dialect: "postgres",
+    port: process.env.POSTGRES_PORT,
+    logging: false   
   }
 );
 
