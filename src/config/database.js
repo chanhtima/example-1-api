@@ -9,6 +9,12 @@ const sequelize = new Sequelize(
     host: process.env.POSTGRES_HOST,
     dialect: "postgres",
     port: process.env.POSTGRES_PORT,
+    dialectOptions: {
+      ssl: {
+        require: true, // This will ensure SSL is used
+        rejectUnauthorized: false // Use false if you don't need to validate the certificate
+      }
+    },
     logging: false   
   }
 );
