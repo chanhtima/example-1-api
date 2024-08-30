@@ -5,7 +5,7 @@ const fs = require("fs");
 // ตั้งค่า storage สำหรับ Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const dir = "images";
+    const dir = "./src/images";
     fs.exists(dir, (exist) => {
       if (!exist) {
         return fs.mkdir(dir, { recursive: true }, (error) => cb(error, dir));

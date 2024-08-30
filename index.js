@@ -14,7 +14,7 @@ const path = require("path");
 app.use(cors());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(express.json());
-app.use("/api/images", express.static(path.join(__dirname, "images")));
+app.use("/api/images", express.static(path.join(__dirname, "./src/images")));
 
 
 // Routes
