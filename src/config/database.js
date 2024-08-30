@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Sequelize } = require("sequelize");
 
 // Initialize Sequelize with environment variables
@@ -9,13 +10,7 @@ const sequelize = new Sequelize(
     host: process.env.POSTGRES_HOST,
     dialect: "postgres",
     port: process.env.POSTGRES_PORT,
-    dialectOptions: {
-      ssl: {
-        require: true, // This will ensure SSL is used
-        rejectUnauthorized: false // Use false if you don't need to validate the certificate
-      }
-    },
-    logging: false   
+    logging: false // Set to `true` if you need to debug queries
   }
 );
 
@@ -23,11 +18,11 @@ async function initializeDatabase() {
   try {
     // Authenticate the connection
     await sequelize.authenticate();
-    // console.log("Connection has been established successfully.");
+    console.log("Connection has been established successfully.");
 
     // Sync all models
     await sequelize.sync({ alter: true }); // Use `alter: true` to update the tables without dropping them
-    // console.log("All models were synchronized successfully.");
+    console.log("All models were synchronized successfully.");
   } catch (error) {
     // Log any connection errors
     console.error("Unable to connect to the database:", error);
