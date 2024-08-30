@@ -8,12 +8,14 @@ require('dotenv').config();
 
 // Import the database connection
 const db = require('./src/config/database');
+const path = require("path");
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(express.json());
-app.use("/api/images", express.static("images"));
+app.use("/api/images", express.static(path.join(__dirname, "images")));
+
 
 // Routes
 readdirSync("./src/Routers").map((r) => app.use("/api", require("./src/Routers/" + r)));
